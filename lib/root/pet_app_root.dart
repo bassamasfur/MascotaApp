@@ -3,7 +3,7 @@ import '../models/pet.dart';
 import '../views/register_pet_view.dart';
 import '../views/pet_list_view.dart';
 import '../views/edit_pet_view.dart';
-import '../widgets/pet_profile_cards.dart';
+
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';

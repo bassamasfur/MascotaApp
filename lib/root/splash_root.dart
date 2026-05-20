@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../views/splash_screen.dart';
-import 'pet_app_root.dart';
+
+import '../welcome_screen.dart';
 
 class SplashRoot extends StatefulWidget {
   const SplashRoot({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _SplashRootState extends State<SplashRoot> {
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const PetAppRoot()),
+          MaterialPageRoute(builder: (_) => const WelcomeScreen()),
         );
       }
     });
