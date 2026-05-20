@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'views/register_pet_view.dart';
+import 'views/splash_screen.dart';
 import 'views/pet_list_view.dart';
 import 'views/edit_pet_view.dart';
 import 'models/pet.dart';
@@ -31,8 +32,34 @@ class PetApp extends StatelessWidget {
         ),
         appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       ),
-      home: _PetAppRoot(),
+      home: const _SplashRoot(),
     );
+  }
+}
+
+/// Splash screen root that transitions to the main app after a delay
+class _SplashRoot extends StatefulWidget {
+  const _SplashRoot();
+  @override
+  State<_SplashRoot> createState() => _SplashRootState();
+}
+
+class _SplashRootState extends State<_SplashRoot> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (_) => _PetAppRoot()));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SplashScreen();
   }
 }
 
