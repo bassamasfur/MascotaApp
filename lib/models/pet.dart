@@ -1,5 +1,3 @@
-/// Modelo que representa una mascota
-
 import 'reminder.dart';
 import 'medical_data.dart';
 

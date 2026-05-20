@@ -194,7 +194,7 @@ class _RegisterPetViewState extends State<RegisterPetView> {
                             children: [
                               Expanded(
                                 child: DropdownButtonFormField<String>(
-                                  value: _species,
+                                  initialValue: _species,
                                   items: const [
                                     DropdownMenuItem(
                                       value: 'Gato',
@@ -247,7 +247,7 @@ class _RegisterPetViewState extends State<RegisterPetView> {
                             value: _isPureBreed,
                             onChanged: (v) => setState(() => _isPureBreed = v),
                             title: const Text('¿Raza pura?'),
-                            activeColor: Color(0xFF2196F3),
+                            activeThumbColor: const Color(0xFF2196F3),
                             contentPadding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: 12),
@@ -275,7 +275,7 @@ class _RegisterPetViewState extends State<RegisterPetView> {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: DropdownButtonFormField<String>(
-                                  value: _gender,
+                                  initialValue: _gender,
                                   items: const [
                                     DropdownMenuItem(
                                       value: 'Hembra',
@@ -379,8 +379,9 @@ class _RegisterPetViewState extends State<RegisterPetView> {
                                       firstDate: DateTime(2000),
                                       lastDate: DateTime.now(),
                                     );
-                                    if (picked != null)
+                                    if (picked != null) {
                                       setState(() => _birthDate = picked);
+                                    }
                                   },
                                 ),
                               ),

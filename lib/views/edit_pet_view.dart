@@ -155,7 +155,7 @@ class _EditPetViewState extends State<EditPetView> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _species,
+                      initialValue: _species,
                       items: const [
                         DropdownMenuItem(value: 'Gato', child: Text('Gato')),
                         DropdownMenuItem(value: 'Perro', child: Text('Perro')),
@@ -200,7 +200,7 @@ class _EditPetViewState extends State<EditPetView> {
                 value: _isPureBreed,
                 onChanged: (v) => setState(() => _isPureBreed = v),
                 title: const Text('¿Raza pura?'),
-                activeColor: Color(0xFF2196F3),
+                activeThumbColor: const Color(0xFF2196F3),
                 contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 12),
@@ -227,7 +227,7 @@ class _EditPetViewState extends State<EditPetView> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _gender,
+                      initialValue: _gender,
                       items: const [
                         DropdownMenuItem(
                           value: 'Hembra',

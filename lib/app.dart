@@ -215,7 +215,9 @@ class _PetAppRootState extends State<_PetAppRoot> {
                       color: Colors.blue.shade50,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.shade100.withOpacity(0.3),
+                          color: Colors.blue.shade100.withAlpha(
+                            (0.3 * 255).toInt(),
+                          ),
                           blurRadius: 16,
                           offset: const Offset(0, 8),
                         ),
@@ -362,7 +364,9 @@ class _PetAppRootState extends State<_PetAppRoot> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.shade100.withOpacity(0.15),
+                          color: Colors.blue.shade100.withAlpha(
+                            (0.15 * 255).toInt(),
+                          ),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),

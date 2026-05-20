@@ -84,7 +84,7 @@ class _AddPetDialogState extends State<AddPetDialog> {
               const SizedBox(height: 16),
               // Selector de especie
               DropdownButtonFormField<String>(
-                value: _selectedSpecies,
+                initialValue: _selectedSpecies,
                 decoration: const InputDecoration(
                   labelText: 'Especie',
                   border: OutlineInputBorder(),

@@ -6,6 +6,7 @@ class HealthCard extends StatelessWidget {
   final String title;
   final String subtitle;
   const HealthCard({
+    super.key,
     required this.icon,
     required this.color,
     required this.title,
@@ -63,6 +64,7 @@ class ReminderCard extends StatelessWidget {
   final String title;
   final String subtitle;
   const ReminderCard({
+    super.key,
     required this.icon,
     required this.color,
     required this.title,
@@ -89,6 +91,7 @@ class InfoCard extends StatelessWidget {
   final String title;
   final List<String> content;
   const InfoCard({
+    super.key,
     required this.icon,
     required this.color,
     required this.title,
