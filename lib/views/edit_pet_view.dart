@@ -86,7 +86,6 @@ class _EditPetViewState extends State<EditPetView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Editar Mascota')),
       body: SingleChildScrollView(
