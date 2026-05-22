@@ -4,7 +4,7 @@ import '../views/splash_screen.dart';
 import '../welcome_screen.dart';
 
 class SplashRoot extends StatefulWidget {
-  const SplashRoot({Key? key}) : super(key: key);
+  const SplashRoot({super.key});
   @override
   State<SplashRoot> createState() => _SplashRootState();
 }

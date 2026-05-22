@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class PetAppRoot extends StatefulWidget {
-  const PetAppRoot({Key? key}) : super(key: key);
+  const PetAppRoot({super.key});
   @override
   State<PetAppRoot> createState() => _PetAppRootState();
 }
