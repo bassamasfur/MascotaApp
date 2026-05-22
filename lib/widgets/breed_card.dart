@@ -14,57 +14,30 @@ class BreedCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 breed.imagenUrl,
-                width: 90,
-                height: 90,
+                width: 70,
+                height: 70,
                 fit: BoxFit.cover,
                 errorBuilder: (c, e, s) => Container(
-                  width: 90,
-                  height: 90,
+                  width: 70,
+                  height: 70,
                   color: Colors.grey[200],
-                  child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+                  child: const Icon(Icons.pets, size: 32, color: Colors.grey),
                 ),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    breed.nombre,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    breed.especie,
-                    style: const TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Tamaño: ${breed.caracteristicas['tamano'] ?? '-'} | Peso: ${breed.caracteristicas['peso'] ?? '-'}',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  Text(
-                    'Vida: ${breed.caracteristicas['vida'] ?? '-'}',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Temperamento: ${breed.temperamento.join(", ")}',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
+              child: Text(
+                breed.nombre,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
           ],
