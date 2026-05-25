@@ -56,205 +56,345 @@ class _BreedsScreenState extends State<BreedsScreen> {
                         b.especie.toLowerCase() == _selectedType.toLowerCase(),
                   )
                   .toList();
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 18,
-                    ),
-                    child: Card(
-                      color: Colors.white.withOpacity(0.92),
-                      elevation: 6,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 10,
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.pets,
-                              color: Color(0xFF2196F3),
-                              size: 26,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'Mostrar:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Color(0xFF2196F3),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _selectedType,
-                                  icon: const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Color(0xFF2196F3),
-                                  ),
-                                  dropdownColor: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  style: const TextStyle(
-                                    color: Color(0xFF2196F3),
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: 'Perro',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.pets,
-                                            color: Color(0xFF2196F3),
-                                            size: 20,
-                                          ),
-                                          SizedBox(width: 6),
-                                          Text('Perros'),
-                                        ],
+              return ListView.builder(
+                itemCount: filtered.length,
+                itemBuilder: (context, index) {
+                  final breed = filtered[index];
+                  return GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          contentPadding: const EdgeInsets.all(0),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Imagen principal mejorada
+                                SizedBox(
+                                  height: 140,
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    ),
+                                    child: Image.network(
+                                      breed.imagenUrl,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (c, e, s) => Container(
+                                        height: 120,
+                                        color: Colors.grey[200],
+                                        child: const Icon(
+                                          Icons.pets,
+                                          size: 48,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
-                                    DropdownMenuItem(
-                                      value: 'Gato',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.pets,
-                                            color: Color(0xFF43A047),
-                                            size: 20,
-                                          ),
-                                          SizedBox(width: 6),
-                                          Text('Gatos'),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        _selectedType = value;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
-                        final breed = filtered[index];
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                title: Text(
-                                  breed.nombre,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                content: SingleChildScrollView(
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 10,
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.stretch,
                                     children: [
-                                      Center(
-                                        child: ClipRRect(
+                                      Text(
+                                        breed.nombre,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      // Características
+                                      Card(
+                                        color: const Color(0xFFFFF8E1),
+                                        margin: const EdgeInsets.only(
+                                          bottom: 6,
+                                        ),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
-                                          child: Image.network(
-                                            breed.imagenUrl,
-                                            width: 140,
-                                            height: 140,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (c, e, s) =>
-                                                Container(
-                                                  width: 140,
-                                                  height: 140,
-                                                  color: Colors.grey[200],
-                                                  child: const Icon(
-                                                    Icons.pets,
-                                                    size: 60,
-                                                    color: Colors.grey,
-                                                  ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 8,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.info,
+                                                color: Colors.amber,
+                                                size: 22,
+                                              ),
+                                              const SizedBox(width: 7),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Tamaño: ${breed.caracteristicas['tamano'] ?? '-'}',
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      'Peso: ${breed.caracteristicas['peso'] ?? '-'}',
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      'Vida: ${breed.caracteristicas['vida'] ?? '-'}',
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'Especie: \\${breed.especie}',
-                                        style: const TextStyle(fontSize: 15),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Tamaño: \\${breed.caracteristicas['tamano'] ?? '-'}',
-                                        style: const TextStyle(fontSize: 15),
-                                      ),
-                                      Text(
-                                        'Peso: \\${breed.caracteristicas['peso'] ?? '-'}',
-                                        style: const TextStyle(fontSize: 15),
-                                      ),
-                                      Text(
-                                        'Esperanza de vida: \\${breed.caracteristicas['vida'] ?? '-'}',
-                                        style: const TextStyle(fontSize: 15),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Temperamento:',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
+                                      // Temperamento
+                                      Card(
+                                        color: const Color(0xFFE3F2FD),
+                                        margin: const EdgeInsets.only(
+                                          bottom: 6,
+                                        ),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 8,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.emoji_emotions,
+                                                color: Colors.orange,
+                                                size: 22,
+                                              ),
+                                              const SizedBox(width: 7),
+                                              Expanded(
+                                                child: Wrap(
+                                                  spacing: 4,
+                                                  runSpacing: 2,
+                                                  children: breed.temperamento
+                                                      .map(
+                                                        (t) => Chip(
+                                                          label: Text(
+                                                            t,
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 12,
+                                                                ),
+                                                          ),
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .blue
+                                                                  .shade50,
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          visualDensity:
+                                                              VisualDensity
+                                                                  .compact,
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      Text(
-                                        breed.temperamento.join(", "),
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      if (breed.descripcion != null &&
-                                          breed.descripcion!.isNotEmpty)
-                                        Text(
-                                          'Descripción: \\${breed.descripcion}',
-                                          style: const TextStyle(fontSize: 14),
+                                      // Cuidados
+                                      if (breed.cuidados.isNotEmpty)
+                                        Card(
+                                          color: const Color(0xFFE1F5FE),
+                                          margin: const EdgeInsets.only(
+                                            bottom: 6,
+                                          ),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 8,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.restaurant,
+                                                  color: Colors.blue,
+                                                  size: 22,
+                                                ),
+                                                const SizedBox(width: 7),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: breed.cuidados
+                                                        .map(
+                                                          (c) => Text(
+                                                            '• $c',
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      // Salud
+                                      if (breed.salud.isNotEmpty)
+                                        Card(
+                                          color: const Color(0xFFFFEBEE),
+                                          margin: const EdgeInsets.only(
+                                            bottom: 6,
+                                          ),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 8,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.health_and_safety,
+                                                  color: Colors.red,
+                                                  size: 22,
+                                                ),
+                                                const SizedBox(width: 7),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: breed.salud
+                                                        .map(
+                                                          (s) => Text(
+                                                            '• $s',
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      // Curiosidades
+                                      if (breed.curiosidades.isNotEmpty)
+                                        Card(
+                                          color: const Color(0xFFF3E5F5),
+                                          margin: const EdgeInsets.only(
+                                            bottom: 6,
+                                          ),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 8,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.lightbulb,
+                                                  color: Colors.purple,
+                                                  size: 22,
+                                                ),
+                                                const SizedBox(width: 7),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: breed.curiosidades
+                                                        .map(
+                                                          (c) => Text(
+                                                            '• $c',
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                     ],
                                   ),
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('Cerrar'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          child: BreedCard(breed: breed),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Cerrar'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: BreedCard(breed: breed),
+                  );
+                },
               );
             },
           ),

@@ -36,7 +36,7 @@ class WelcomeScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () => Navigator.pushNamed(context, '/pets'),
                         child: Container(
                           height: 170,
                           decoration: BoxDecoration(
