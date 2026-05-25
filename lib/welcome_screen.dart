@@ -10,13 +10,16 @@ class WelcomeScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Fondo decorativo superior
+              // Header compacto y moderno
               Container(
-                height: 170,
-                width: double.infinity,
+                padding: const EdgeInsets.only(
+                  top: 24,
+                  left: 0,
+                  right: 0,
+                  bottom: 18,
+                ),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -24,162 +27,79 @@ class WelcomeScreen extends StatelessWidget {
                     colors: [Color(0xFF2196F3), Color(0xFF90CAF9)],
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [const SizedBox(height: 32)],
+                child: Center(
+                  child: Text(
+                    '¡Bienvenido!',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [Shadow(color: Colors.black26, blurRadius: 4)],
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
+              // Accesos rápidos
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _HomeCard(
+                    title: 'Mis Mascotas',
+                    subtitle: 'Gestiona el perfil de tus mascotas',
+                    color: Color(0xFF4FC3F7),
+                    image: 'assets/icons/cat.png',
+                    onTap: () => Navigator.pushNamed(context, '/pets'),
+                    cardWidth: 140,
+                    cardHeight: 140,
+                    imageSize: 64,
+                  ),
+                  const SizedBox(width: 20),
+                  _HomeCard(
+                    title: 'Razas',
+                    subtitle: 'Explora razas de perros y gatos',
+                    color: Color(0xFF81C784),
+                    image: 'assets/icons/dog.png',
+                    onTap: () => Navigator.pushNamed(context, '/breeds'),
+                    cardWidth: 140,
+                    cardHeight: 140,
+                    imageSize: 64,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 28),
+              // Botones de especie
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/pets'),
-                        child: Container(
-                          height: 170,
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade700,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blue.shade900.withAlpha(
-                                  (0.13 * 255).toInt(),
-                                ),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/icons/cat.png',
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'Mis Mascotas',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 19,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  'Gestiona el perfil de tus mascotas',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 13,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    _SpeciesButton(
+                      icon: Icons.pets,
+                      label: 'Perros',
+                      color: Color(0xFFFFECB3),
+                      textColor: Color(0xFF1976D2),
+                      onTap: () {},
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/breeds'),
-                        child: Container(
-                          height: 170,
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade700,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.green.shade900.withOpacity(0.13),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/icons/dog.png',
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'Razas',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 19,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  'Explora razas de perros y gatos',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 13,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    const SizedBox(width: 12),
+                    _SpeciesButton(
+                      icon: Icons.pets,
+                      label: 'Gatos',
+                      color: Color(0xFFFFCCBC),
+                      textColor: Color(0xFFD84315),
+                      onTap: () {},
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
-              // Consejos destacados (puedes personalizar o eliminar)
+              // Consejos destacados
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18.0,
+                  vertical: 0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -195,7 +115,7 @@ class WelcomeScreen extends StatelessWidget {
                         Text(
                           'Consejos Destacados',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),
@@ -209,7 +129,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10),
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -232,12 +152,12 @@ class WelcomeScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(14.0),
                             child: ClipOval(
                               child: Image.asset(
                                 'assets/icons/bowl.png',
-                                width: 56,
-                                height: 56,
+                                width: 48,
+                                height: 48,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -245,7 +165,7 @@ class WelcomeScreen extends StatelessWidget {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                vertical: 12.0,
+                                vertical: 10.0,
                                 horizontal: 4.0,
                               ),
                               child: Column(
@@ -255,16 +175,16 @@ class WelcomeScreen extends StatelessWidget {
                                     '¿Cómo elegir el mejor alimento para tu mascota?',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                      fontSize: 14,
                                       color: Colors.blue,
                                     ),
                                   ),
-                                  SizedBox(height: 4),
+                                  SizedBox(height: 2),
                                   Text(
                                     'Descúbrelo aquí',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ],
@@ -277,7 +197,59 @@ class WelcomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
+
+              // Consejos rápidos para el cuidado
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18.0,
+                  vertical: 0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(
+                          Icons.tips_and_updates,
+                          color: Colors.orange,
+                          size: 22,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Consejos Rápidos',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    _QuickTipCard(
+                      icon: Icons.shower,
+                      title: '¿Cada cuánto debo bañar a mi mascota?',
+                      tip:
+                          'En general, los perros cada 1-2 meses y los gatos solo si están muy sucios.',
+                    ),
+                    const SizedBox(height: 8),
+                    _QuickTipCard(
+                      icon: Icons.monitor_heart,
+                      title: '¿Cómo detectar si mi mascota está enferma?',
+                      tip:
+                          'Observa cambios en apetito, energía, pelaje o comportamiento. Ante dudas, consulta al veterinario.',
+                    ),
+                    const SizedBox(height: 8),
+                    _QuickTipCard(
+                      icon: Icons.directions_run,
+                      title: '¿Cuánto ejercicio necesita?',
+                      tip:
+                          'Perros: mínimo 30 min diarios. Gatos: juega con ellos al menos 15 min al día.',
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -300,6 +272,7 @@ class WelcomeScreen extends StatelessWidget {
         child: BottomNavigationBar(
           currentIndex: 0,
           onTap: (index) {},
+          type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
             BottomNavigationBarItem(
@@ -315,6 +288,203 @@ class WelcomeScreen extends StatelessWidget {
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,
           showUnselectedLabels: true,
+        ),
+      ),
+    );
+  }
+}
+
+// Tarjeta principal de acceso rápido
+class _HomeCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Color color;
+  final String image;
+  final VoidCallback onTap;
+  final double cardWidth;
+  final double cardHeight;
+  final double imageSize;
+  const _HomeCard({
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.image,
+    required this.onTap,
+    this.cardWidth = 110,
+    this.cardHeight = 110,
+    this.imageSize = 48,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: cardWidth,
+        height: cardHeight,
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withAlpha((0.18 * 255).toInt()),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipOval(
+              child: Image.asset(
+                image,
+                width: imageSize,
+                height: imageSize,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                subtitle,
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Tarjeta de consejo rápido
+class _QuickTipCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String tip;
+  const _QuickTipCard({
+    required this.icon,
+    required this.title,
+    required this.tip,
+    Key? key,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8E1),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withAlpha((0.10 * 255).toInt()),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Icon(icon, color: Colors.orange, size: 28),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 4.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    tip,
+                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Botón de especie
+class _SpeciesButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final Color textColor;
+  final VoidCallback onTap;
+  const _SpeciesButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.textColor,
+    required this.onTap,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: color.withAlpha((0.13 * 255).toInt()),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: textColor, size: 22),
+              const SizedBox(width: 7),
+              Text(
+                label,
+                style: TextStyle(
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
