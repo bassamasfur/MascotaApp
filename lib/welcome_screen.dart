@@ -1,4 +1,102 @@
+// Popup juvenil y atractivo para info de especie
 import 'package:flutter/material.dart';
+
+// Popup juvenil y atractivo para info de especie
+class _SpeciesInfoDialog extends StatelessWidget {
+  final String species;
+  const _SpeciesInfoDialog({required this.species});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDog = species.toLowerCase().contains('perro');
+    final color = isDog ? const Color(0xFF1976D2) : const Color(0xFFD84315);
+    final emoji = isDog ? '🐶' : '🐱';
+    final title = isDog ? '¡Sobre los Perros!' : '¡Sobre los Gatos!';
+    final desc = isDog
+        ? 'Los perros son leales, sociales y juguetones. Disfrutan de la compañía humana, los paseos y los juegos al aire libre.'
+        : 'Los gatos son curiosos, independientes y cariñosos a su manera. Les encanta explorar, dormir y jugar con objetos pequeños.';
+    final tips = isDog
+        ? [
+            ['🌳', 'Aman los paseos y explorar nuevos lugares.'],
+            ['🎾', 'Disfrutan de juegos como buscar la pelota.'],
+            ['🦴', 'El refuerzo positivo y las rutinas los hacen felices.'],
+          ]
+        : [
+            ['🪴', 'Les gusta trepar y observar desde lugares altos.'],
+            ['🧹', 'Prefieren la limpieza y el arenero limpio.'],
+            ['🧶', 'Son muy juguetones con objetos pequeños.'],
+          ];
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 48)),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              desc,
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ...tips.map(
+              (tip) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3.5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(tip[0], style: const TextStyle(fontSize: 20)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        tip[1],
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 10,
+                ),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                '¡Entendido!',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -81,7 +179,13 @@ class WelcomeScreen extends StatelessWidget {
                       label: 'Perros',
                       color: Color(0xFFFFECB3),
                       textColor: Color(0xFF1976D2),
-                      onTap: () {},
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              _SpeciesInfoDialog(species: 'Perro'),
+                        );
+                      },
                     ),
                     const SizedBox(width: 12),
                     _SpeciesButton(
@@ -89,7 +193,13 @@ class WelcomeScreen extends StatelessWidget {
                       label: 'Gatos',
                       color: Color(0xFFFFCCBC),
                       textColor: Color(0xFFD84315),
-                      onTap: () {},
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              _SpeciesInfoDialog(species: 'Gato'),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -390,12 +500,12 @@ class _QuickTipCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: const Color(0xFFFFF8E1),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.orange.withAlpha((0.10 * 255).toInt()),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: Colors.orange.withAlpha((0.08 * 255).toInt()),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -403,14 +513,14 @@ class _QuickTipCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(icon, color: Colors.orange, size: 28),
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(icon, color: Colors.orange, size: 22),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 4.0,
+                vertical: 8.0,
+                horizontal: 2.0,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,15 +528,21 @@ class _QuickTipCard extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
                       color: Colors.orange,
                     ),
+                    textAlign: TextAlign.left,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 1),
                   Text(
                     tip,
-                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 11,
+                      height: 1.2,
+                    ),
+                    textAlign: TextAlign.justify,
                   ),
                 ],
               ),

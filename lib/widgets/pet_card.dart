@@ -14,63 +14,29 @@ class PetCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         child: Row(
           children: [
             // Avatar con emoji
             Container(
-              width: 60,
-              height: 60,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 color: _getColorForSpecies(pet.species),
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(28),
               ),
               child: Center(
                 child: Text(pet.imageUrl, style: const TextStyle(fontSize: 32)),
               ),
             ),
-            const SizedBox(width: 16),
-            // Información de la mascota
+            const SizedBox(width: 18),
+            // Solo nombre
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    pet.name,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        _getIconForSpecies(pet.species),
-                        size: 16,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        pet.species,
-                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(Icons.cake, size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${pet.age} ${pet.age == 1 ? 'año' : 'años'}',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    pet.description,
-                    style: TextStyle(color: Colors.grey[700], fontSize: 13),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+              child: Text(
+                pet.name,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             // Botón de eliminar
