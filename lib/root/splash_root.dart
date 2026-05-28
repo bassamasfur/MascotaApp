@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../views/splash_screen.dart';
-
 import '../welcome_screen.dart';
 
 class SplashRoot extends StatefulWidget {

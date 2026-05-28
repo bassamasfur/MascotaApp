@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../controllers/breed_controller.dart';
 import '../widgets/breed_card.dart';
 import '../models/breed.dart';
@@ -97,18 +98,28 @@ class _BreedsScreenState extends State<BreedsScreen> {
                                         topLeft: Radius.circular(20),
                                         topRight: Radius.circular(20),
                                       ),
-                                      child: Image.network(
-                                        breed.imagenUrl,
+                                      child: CachedNetworkImage(
+                                        imageUrl: breed.imagenUrl,
                                         fit: BoxFit.contain,
-                                        errorBuilder: (c, e, s) => Container(
-                                          height: 120,
-                                          color: Colors.grey[200],
-                                          child: const Icon(
-                                            Icons.pets,
-                                            size: 48,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
+                                        placeholder: (context, url) =>
+                                            Container(
+                                              height: 120,
+                                              color: Colors.grey[200],
+                                              child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                              height: 120,
+                                              color: Colors.grey[200],
+                                              child: const Icon(
+                                                Icons.pets,
+                                                size: 48,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                       ),
                                     ),
                                   ),
