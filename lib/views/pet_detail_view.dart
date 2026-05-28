@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../models/pet.dart';
 
 class PetDetailView extends StatelessWidget {
@@ -29,15 +30,19 @@ class PetDetailView extends StatelessWidget {
                   backgroundColor: Colors.white,
                   child: pet.imageUrl.isNotEmpty
                       ? ClipOval(
-                          child: Image.asset(
-                            pet.imageUrl,
+                          child: Image.file(
+                            File(pet.imageUrl),
                             width: 110,
                             height: 110,
                             fit: BoxFit.cover,
                           ),
                         )
                       : Text(
-                          '🐾',
+                          pet.species.toLowerCase() == 'perro'
+                              ? '🐶'
+                              : pet.species.toLowerCase() == 'gato'
+                              ? '🐱'
+                              : '🐾',
                           style: TextStyle(
                             fontSize: 56,
                             color: Colors.blue[200],

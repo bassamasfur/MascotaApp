@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../models/pet.dart';
 
 /// Widget que muestra la información de una mascota en forma de tarjeta
@@ -24,7 +25,7 @@ class PetCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         child: Row(
           children: [
-            // Avatar con emoji
+            // Avatar con foto o emoji
             Container(
               width: 56,
               height: 56,
@@ -32,9 +33,25 @@ class PetCard extends StatelessWidget {
                 color: _getColorForSpecies(pet.species),
                 borderRadius: BorderRadius.circular(28),
               ),
-              child: Center(
-                child: Text(pet.imageUrl, style: const TextStyle(fontSize: 32)),
-              ),
+              child: pet.imageUrl.isNotEmpty
+                  ? ClipOval(
+                      child: Image.file(
+                        File(pet.imageUrl),
+                        width: 52,
+                        height: 52,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        pet.species.toLowerCase() == 'perro'
+                            ? '🐶'
+                            : pet.species.toLowerCase() == 'gato'
+                            ? '🐱'
+                            : '🐾',
+                        style: const TextStyle(fontSize: 32),
+                      ),
+                    ),
             ),
             const SizedBox(width: 18),
             // Solo nombre

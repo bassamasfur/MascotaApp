@@ -30,11 +30,34 @@ class _RegisterPetViewState extends State<RegisterPetView> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        _imageFile = File(picked.path);
-      });
+    while (true) {
+      final picked = await picker.pickImage(source: ImageSource.camera);
+      if (picked == null) return; // Cancelado
+      if (!mounted) return;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('¿Usar esta foto?'),
+          content: Image.file(File(picked.path), height: 220),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Repetir'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        ),
+      );
+      if (confirmed == true) {
+        setState(() {
+          _imageFile = File(picked.path);
+        });
+        break;
+      }
+      // Si no confirmó, repite el ciclo (vuelve a abrir la cámara)
     }
   }
 

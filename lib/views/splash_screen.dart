@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 class AnimatedBubbles extends StatefulWidget {
-  const AnimatedBubbles({Key? key}) : super(key: key);
+  const AnimatedBubbles({super.key});
   @override
   State<AnimatedBubbles> createState() => _AnimatedBubblesState();
 }
