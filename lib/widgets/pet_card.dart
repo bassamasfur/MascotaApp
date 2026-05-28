@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import '../models/pet.dart';
 
 /// Widget que muestra la información de una mascota en forma de tarjeta
+
 class PetCard extends StatelessWidget {
   final Pet pet;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
-  const PetCard({super.key, required this.pet, required this.onDelete});
+  const PetCard({
+    super.key,
+    required this.pet,
+    required this.onDelete,
+    required this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +45,13 @@ class PetCard extends StatelessWidget {
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
+            ),
+            // Botón de editar
+            IconButton(
+              icon: const Icon(Icons.edit),
+              color: Colors.blue[400],
+              onPressed: onEdit,
+              tooltip: 'Editar',
             ),
             // Botón de eliminar
             IconButton(

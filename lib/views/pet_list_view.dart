@@ -3,6 +3,7 @@ import '../models/pet.dart';
 
 import '../widgets/pet_card.dart';
 import 'pet_detail_view.dart';
+import 'register_pet_view.dart';
 
 class PetListView extends StatelessWidget {
   final List<Pet> pets;
@@ -37,7 +38,23 @@ class PetListView extends StatelessWidget {
                       ),
                     );
                   },
-                  child: PetCard(pet: pet, onDelete: () => onDeletePet(pet)),
+                  child: PetCard(
+                    pet: pet,
+                    onDelete: () => onDeletePet(pet),
+                    onEdit: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => RegisterPetView(
+                            onPetRegistered: (editedPet) {
+                              // Aquí deberías actualizar la mascota editada en la lista principal
+                              // Este callback debe ser manejado en el widget padre (PetAppRoot)
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),

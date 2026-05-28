@@ -97,6 +97,11 @@ class HomeView extends StatelessWidget {
                     return PetCard(
                       pet: pet,
                       onDelete: () => _confirmDelete(context, pet.id, pet.name),
+                      onEdit: () {
+                        // Aquí puedes abrir el formulario de edición o navegar a la vista de edición
+                        // Por ejemplo:
+                        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => RegisterPetView(...)));
+                      },
                     );
                   },
                 ),

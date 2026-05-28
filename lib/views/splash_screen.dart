@@ -101,6 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 class AnimatedBubbles extends StatefulWidget {
+  const AnimatedBubbles({Key? key}) : super(key: key);
   @override
   State<AnimatedBubbles> createState() => _AnimatedBubblesState();
 }
@@ -181,7 +182,8 @@ class _BubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (final bubble in bubbles) {
-      final paint = Paint()..color = bubble.color.withOpacity(0.18);
+      final paint = Paint()
+        ..color = bubble.color.withAlpha((0.18 * 255).toInt());
       final dy =
           size.height -
           ((progress + bubble.offset) % 1.0) * size.height * bubble.speed;
