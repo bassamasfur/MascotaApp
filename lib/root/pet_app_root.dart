@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/pet.dart';
 import '../views/register_pet_view.dart';
 import '../views/pet_list_view.dart';
-import '../views/edit_pet_view.dart';
 
-import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -59,15 +57,7 @@ class _PetAppRootState extends State<PetAppRoot> {
     await _savePets();
   }
 
-  void _editPet(Pet updatedPet) async {
-    setState(() {
-      final idx = _pets.indexWhere((p) => p.id == updatedPet.id);
-      if (idx != -1) {
-        _pets[idx] = updatedPet;
-      }
-    });
-    await _savePets();
-  }
+  // ...existing code...
 
   void _deletePet(Pet pet) async {
     setState(() {

@@ -71,22 +71,5 @@ class PetCard extends StatelessWidget {
     }
   }
 
-  /// Obtiene un icono basado en la especie
-  IconData _getIconForSpecies(String species) {
-    switch (species.toLowerCase()) {
-      case 'perro':
-        return Icons.pets;
-      case 'gato':
-        return Icons.pets;
-      case 'loro':
-      case 'ave':
-        return Icons.flutter_dash;
-      case 'pez':
-        return Icons.water;
-      case 'conejo':
-        return Icons.cruelty_free;
-      default:
-        return Icons.pets;
-    }
-  }
+  // ...existing code...
 }
