@@ -105,8 +105,9 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      final original = widget.pet;
       final pet = Pet(
-        id: widget.pet?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id: original?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
         name: _nameController.text.trim(),
         species: _species,
         breed: _breedController.text.trim(),
@@ -124,6 +125,9 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
             : _registrationController.text.trim(),
         imageUrl: _imageFile?.path ?? '',
         description: _descriptionController.text.trim(),
+        reminders: original?.reminders ?? const [],
+        medicalData: original?.medicalData ?? const [],
+        activities: original?.activities ?? const [],
       );
       widget.onPetSaved(pet);
     }

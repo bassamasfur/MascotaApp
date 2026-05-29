@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/pet_list_provider.dart';
 import 'app.dart';
 
 /// Punto de entrada de la aplicación
@@ -8,5 +10,10 @@ import 'app.dart';
 /// - Views: Muestran la información al usuario
 /// - Controllers: Gestionan la interacción entre Models y Views
 void main() {
-  runApp(const PetApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => PetListProvider(),
+      child: const PetApp(),
+    ),
+  );
 }

@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/pet.dart';
-import '../views/register_pet_view.dart';
-import '../views/pet_list_view.dart';
+import '../welcome_screen.dart';
 import '../views/register_edit_pet_view.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+
+// InheritedWidget para exponer la lista de mascotas a descendientes
+class PetListProvider extends InheritedWidget {
+  final List<Pet> pets;
+  const PetListProvider({required this.pets, required super.child, super.key});
+  static PetListProvider? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<PetListProvider>();
+  @override
+  bool updateShouldNotify(PetListProvider oldWidget) => pets != oldWidget.pets;
+}
 
 class PetAppRoot extends StatefulWidget {
   const PetAppRoot({super.key});
   @override
-  State<PetAppRoot> createState() => _PetAppRootState();
+  State<PetAppRoot> createState() => PetAppRootState();
 }
 
-class _PetAppRootState extends State<PetAppRoot> {
+class PetAppRootState extends State<PetAppRoot> {
   List<Pet> _pets = [];
-  // Pet? _selectedPet;
   bool _loading = true;
 
   @override
@@ -51,25 +58,27 @@ class _PetAppRootState extends State<PetAppRoot> {
     );
   }
 
-  void _addPet(Pet pet) async {
+  void addPet(Pet pet) async {
     setState(() {
       _pets.add(pet);
     });
     await _savePets();
+    if (mounted) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
-  // ...existing code...
-
-  void _deletePet(Pet pet) async {
+  void deletePet(Pet pet) async {
     setState(() {
       _pets.removeWhere((p) => p.id == pet.id);
     });
     await _savePets();
+    if (mounted) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
-  // Ya no se necesita _selectPet
-
-  void _editPet(Pet pet) {
+  void editPet(Pet pet) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => RegisterEditPetView(
@@ -84,7 +93,7 @@ class _PetAppRootState extends State<PetAppRoot> {
             });
             await _savePets();
             if (!mounted) return;
-            Navigator.of(context).pop();
+            Navigator.of(context).popUntil((route) => route.isFirst);
           },
         ),
       ),
@@ -96,33 +105,6 @@ class _PetAppRootState extends State<PetAppRoot> {
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    if (_pets.isEmpty) {
-      // Mostrar el formulario solo para la PRIMERA mascota, luego volver a la lista
-      return RegisterPetView(
-        onPetRegistered: (pet) {
-          _addPet(pet);
-          setState(() {}); // Fuerza reconstrucción para mostrar la lista
-        },
-      );
-    }
-    // Siempre mostrar la lista de mascotas
-    return PetListView(
-      pets: _pets,
-      onDeletePet: (pet) => _deletePet(pet),
-      onAddPet: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => RegisterPetView(
-              onPetRegistered: (pet) {
-                Navigator.of(context).pop();
-                _addPet(pet);
-                if (!mounted) return;
-              },
-            ),
-          ),
-        );
-      },
-      onEditPet: _editPet,
-    );
+    return PetListProvider(pets: _pets, child: const WelcomeScreen());
   }
 }

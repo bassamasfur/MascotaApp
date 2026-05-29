@@ -3,7 +3,6 @@ import '../models/pet.dart';
 
 import '../widgets/pet_card.dart';
 import 'pet_detail_view.dart';
-import 'register_edit_pet_view.dart';
 
 class PetListView extends StatelessWidget {
   final List<Pet> pets;
@@ -40,7 +39,33 @@ class PetListView extends StatelessWidget {
                   },
                   child: PetCard(
                     pet: pet,
-                    onDelete: () => onDeletePet(pet),
+                    onDelete: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Eliminar mascota'),
+                          content: const Text(
+                            '¿Seguro que deseas eliminar esta mascota?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(false),
+                              child: const Text('Cancelar'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.of(ctx).pop(true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              child: const Text('Eliminar'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        onDeletePet(pet);
+                      }
+                    },
                     onEdit: () => onEditPet(pet),
                   ),
                 );

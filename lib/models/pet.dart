@@ -1,5 +1,6 @@
 import 'reminder.dart';
 import 'medical_data.dart';
+import 'pet_activity.dart';
 
 class Pet {
   final String id;
@@ -18,6 +19,7 @@ class Pet {
   final String description;
   final List<Reminder> reminders;
   final List<MedicalData> medicalData;
+  final List<PetActivity> activities;
 
   Pet({
     required this.id,
@@ -36,6 +38,7 @@ class Pet {
     required this.description,
     this.reminders = const [],
     this.medicalData = const [],
+    this.activities = const [],
   });
 
   /// Constructor para crear una Pet desde JSON
@@ -67,6 +70,11 @@ class Pet {
               ?.map((e) => MedicalData.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      activities:
+          (json['activities'] as List<dynamic>?)
+              ?.map((e) => PetActivity.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 
@@ -89,6 +97,7 @@ class Pet {
       'description': description,
       'reminders': reminders.map((e) => e.toJson()).toList(),
       'medicalData': medicalData.map((e) => e.toJson()).toList(),
+      'activities': activities.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -110,6 +119,7 @@ class Pet {
     String? description,
     List<Reminder>? reminders,
     List<MedicalData>? medicalData,
+    List<PetActivity>? activities,
   }) {
     return Pet(
       id: id ?? this.id,
@@ -128,6 +138,7 @@ class Pet {
       description: description ?? this.description,
       reminders: reminders ?? this.reminders,
       medicalData: medicalData ?? this.medicalData,
+      activities: activities ?? this.activities,
     );
   }
 
