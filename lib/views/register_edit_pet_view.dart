@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import '../models/pet.dart';
 
 /// Vista unificada para registrar o editar una mascota
@@ -86,8 +88,15 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
         ),
       );
       if (confirmed == true) {
+        // Guardar la imagen en el directorio de documentos de la app
+        final appDir = await getApplicationDocumentsDirectory();
+        final fileName =
+            'pet_${DateTime.now().millisecondsSinceEpoch}${path.extension(picked.path)}';
+        final savedImage = await File(
+          picked.path,
+        ).copy(path.join(appDir.path, fileName));
         setState(() {
-          _imageFile = File(picked.path);
+          _imageFile = savedImage;
         });
         break;
       }
