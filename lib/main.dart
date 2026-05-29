@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'providers/pet_list_provider.dart';
 import 'app.dart';
 import 'services/notification_service.dart';
+
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:permission_handler/permission_handler.dart';
 
 /// Punto de entrada de la aplicación
 ///
@@ -15,6 +17,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   await NotificationService.initialize();
+
+  // Solicitar permiso de notificaciones en Android 13+
+  if (await Permission.notification.isDenied) {
+    await Permission.notification.request();
+  }
   runApp(
     ChangeNotifierProvider(
       create: (_) => PetListProvider(),
