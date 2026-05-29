@@ -10,8 +10,8 @@ class BreedCard extends StatelessWidget {
     final isDog = breed.especie.toLowerCase().contains('perro');
     final cardColor = isDog ? Colors.blue.shade700 : Colors.green.shade700;
     final shadowColor = isDog
-        ? Colors.blue.shade900.withOpacity(0.13)
-        : Colors.green.shade900.withOpacity(0.13);
+        ? Colors.blue.shade900.withAlpha((255 * 0.13).toInt())
+        : Colors.green.shade900.withAlpha((255 * 0.13).toInt());
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(

@@ -492,8 +492,7 @@ class _QuickTipCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.tip,
-    Key? key,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Container(

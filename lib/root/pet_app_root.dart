@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/pet.dart';
 import '../views/register_pet_view.dart';
 import '../views/pet_list_view.dart';
+import '../views/register_edit_pet_view.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -68,6 +69,28 @@ class _PetAppRootState extends State<PetAppRoot> {
 
   // Ya no se necesita _selectPet
 
+  void _editPet(Pet pet) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RegisterEditPetView(
+          pet: pet,
+          isEdit: true,
+          onPetSaved: (editedPet) async {
+            setState(() {
+              final idx = _pets.indexWhere((p) => p.id == editedPet.id);
+              if (idx != -1) {
+                _pets[idx] = editedPet;
+              }
+            });
+            await _savePets();
+            if (!mounted) return;
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -91,11 +114,13 @@ class _PetAppRootState extends State<PetAppRoot> {
               onPetRegistered: (pet) {
                 Navigator.of(context).pop();
                 _addPet(pet);
+                if (!mounted) return;
               },
             ),
           ),
         );
       },
+      onEditPet: _editPet,
     );
   }
 }
