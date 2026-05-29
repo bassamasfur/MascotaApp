@@ -5,6 +5,7 @@ import '../models/activity_type.dart';
 import '../models/activity_schedule.dart';
 import 'package:provider/provider.dart';
 import '../providers/pet_list_provider.dart';
+import '../services/notification_service.dart';
 
 class PetAgendaDetailScreen extends StatefulWidget {
   final Pet pet;
@@ -216,6 +217,23 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                                 _activities[index] = editedActivity;
                               }
                             });
+                            // Programar notificación local para la actividad
+                            final notifId =
+                                int.tryParse(
+                                  editedActivity.id.hashCode
+                                      .toString()
+                                      .replaceAll('-', ''),
+                                ) ??
+                                DateTime.now().millisecondsSinceEpoch;
+                            final petName = widget.pet.name;
+                            final actLabel = _activityTypeLabel(selectedType!);
+                            final notifTime = today;
+                            await NotificationService.scheduleNotification(
+                              id: notifId,
+                              title: 'Actividad pendiente para $petName',
+                              body: 'Tienes que realizar: $actLabel',
+                              scheduledTime: notifTime,
+                            );
                             // Usar el provider para actualizar y persistir
                             await Provider.of<PetListProvider>(
                               context,
