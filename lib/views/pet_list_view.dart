@@ -47,20 +47,7 @@ class PetListView extends StatelessWidget {
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => RegisterEditPetView(
-                onPetSaved: (newPet) {
-                  // Aquí deberías agregar la nueva mascota a la lista principal
-                  // Este callback debe ser manejado en el widget padre (PetAppRoot)
-                  Navigator.of(context).pop();
-                },
-                isEdit: false,
-              ),
-            ),
-          );
-        },
+        onPressed: onAddPet,
         icon: const Icon(Icons.add),
         label: const Text('Añadir Mascota'),
       ),

@@ -454,46 +454,46 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          // Microchip y registro
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _microchipController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Microchip (opcional)',
-                                    prefixIcon: const Icon(
-                                      Icons.qr_code,
-                                      color: Color(0xFF2196F3),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _registrationController,
-                                  decoration: InputDecoration(
-                                    labelText: 'N° de registro (opcional)',
-                                    prefixIcon: const Icon(
-                                      Icons.confirmation_number,
-                                      color: Color(0xFF2196F3),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Microchip y registro (ocultos por ahora)
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //       child: TextFormField(
+                          //         controller: _microchipController,
+                          //         decoration: InputDecoration(
+                          //           labelText: 'Microchip (opcional)',
+                          //           prefixIcon: const Icon(
+                          //             Icons.qr_code,
+                          //             color: Color(0xFF2196F3),
+                          //           ),
+                          //           border: OutlineInputBorder(
+                          //             borderRadius: BorderRadius.circular(12),
+                          //           ),
+                          //           filled: true,
+                          //           fillColor: Colors.white,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     const SizedBox(width: 10),
+                          //     Expanded(
+                          //       child: TextFormField(
+                          //         controller: _registrationController,
+                          //         decoration: InputDecoration(
+                          //           labelText: 'N° de registro (opcional)',
+                          //           prefixIcon: const Icon(
+                          //             Icons.confirmation_number,
+                          //             color: Color(0xFF2196F3),
+                          //           ),
+                          //           border: OutlineInputBorder(
+                          //             borderRadius: BorderRadius.circular(12),
+                          //           ),
+                          //           filled: true,
+                          //           fillColor: Colors.white,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           const SizedBox(height: 12),
                           // Descripción
                           TextFormField(

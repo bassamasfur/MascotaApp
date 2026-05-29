@@ -97,9 +97,11 @@ class _PetAppRootState extends State<PetAppRoot> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (_pets.isEmpty) {
+      // Mostrar el formulario solo para la PRIMERA mascota, luego volver a la lista
       return RegisterPetView(
         onPetRegistered: (pet) {
           _addPet(pet);
+          setState(() {}); // Fuerza reconstrucción para mostrar la lista
         },
       );
     }
