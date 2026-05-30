@@ -16,6 +16,17 @@ class PetAgendaDetailScreen extends StatefulWidget {
 }
 
 class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
+  void _reloadActivities() {
+    final provider = Provider.of<PetListProvider>(context, listen: false);
+    final pet = provider.pets.firstWhere(
+      (p) => p.id == widget.pet.id,
+      orElse: () => widget.pet,
+    );
+    setState(() {
+      _activities = List<PetActivity>.from(pet.activities);
+    });
+  }
+
   void _deleteActivity(int index) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -44,6 +55,17 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
         context,
         listen: false,
       ).updatePetActivities(widget.pet.id, _activities);
+      // LOG de depuración para ver actividades guardadas
+      final provider = Provider.of<PetListProvider>(context, listen: false);
+      final pet = provider.pets.firstWhere(
+        (p) => p.id == widget.pet.id,
+        orElse: () => widget.pet,
+      );
+      print('ACTIVIDADES GUARDADAS PARA ${pet.name}:');
+      for (final act in pet.activities) {
+        print(' - ${act.type} @ ${act.schedules.map((s) => s.time)}');
+      }
+      _reloadActivities();
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -57,8 +79,7 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Copia local para edición en memoria
-    _activities = List<PetActivity>.from(widget.pet.activities);
+    _reloadActivities();
   }
 
   String _activityTypeLabel(ActivityType type) {
@@ -239,8 +260,11 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                               context,
                               listen: false,
                             ).updatePetActivities(widget.pet.id, _activities);
+                            _reloadActivities();
                             if (mounted) {
-                              Navigator.of(context).pop();
+                              Navigator.of(
+                                context,
+                              ).popUntil((route) => route.isFirst);
                             }
                           }
                         },

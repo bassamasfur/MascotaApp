@@ -177,7 +177,9 @@ class WelcomeScreen extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (_) => RegisterPetView(
                                         onPetRegistered: (pet) async {
-                                          Navigator.of(context).pop();
+                                          Navigator.of(
+                                            context,
+                                          ).popUntil((route) => route.isFirst);
                                           await petListProvider.addPet(pet);
                                         },
                                       ),
@@ -191,7 +193,9 @@ class WelcomeScreen extends StatelessWidget {
                                         pet: pet,
                                         isEdit: true,
                                         onPetSaved: (editedPet) async {
-                                          Navigator.of(context).pop();
+                                          Navigator.of(
+                                            context,
+                                          ).popUntil((route) => route.isFirst);
                                           await petListProvider.editPet(
                                             editedPet,
                                           );
