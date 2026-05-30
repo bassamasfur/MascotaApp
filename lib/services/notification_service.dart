@@ -29,7 +29,7 @@ class NotificationService {
           channelDescription: 'Notificaciones de actividades de mascotas',
           importance: Importance.max,
           priority: Priority.high,
-          sound: RawResourceAndroidNotificationSound('actividad'),
+          sound: RawResourceAndroidNotificationSound('test'),
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
