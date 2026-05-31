@@ -13,6 +13,7 @@ import 'widgets/agenda_launcher.dart';
 import 'views/pet_list_view.dart';
 import 'views/register_pet_view.dart';
 import 'views/register_edit_pet_view.dart';
+import 'services/notification_service.dart';
 
 // Popup juvenil y atractivo para info de especie
 class _SpeciesInfoDialog extends StatelessWidget {
@@ -124,6 +125,51 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // BOTÓN TEMPORAL DE PRUEBA DE NOTIFICACIÓN PROGRAMADA
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.notifications_active,
+                    color: Colors.red,
+                  ),
+                  label: const Text(
+                    'PROBAR NOTIFICACIÓN PROGRAMADA (1 min)',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.yellow.shade100,
+                    foregroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final now = DateTime.now();
+                    final scheduled = now.add(const Duration(minutes: 1));
+                    await NotificationService.scheduleNotification(
+                      id: 8888,
+                      title: 'Notificación de prueba programada',
+                      body:
+                          '¡Esto es una notificación programada para 1 minuto en el futuro!',
+                      scheduledTime: scheduled,
+                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Notificación programada para 1 minuto en el futuro.',
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
               // Header compacto y moderno
               Container(
                 padding: const EdgeInsets.only(
