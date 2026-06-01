@@ -25,9 +25,6 @@ Future<void> main() async {
     await Permission.notification.request();
   }
 
-  // PRUEBA: Mostrar notificación inmediata
-  await NotificationService.showTestNotification();
-
   runApp(
     ChangeNotifierProvider(
       create: (_) => PetListProvider(),

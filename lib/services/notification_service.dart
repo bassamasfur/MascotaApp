@@ -1,21 +1,23 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    hide GroupAlertBehavior;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  static const String _awesomeChannelKey = 'pet_activities_channel';
+  static const String _awesomeChannelKey = 'pet_activities_channel_v4';
 
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   static const AndroidNotificationDetails _androidDetails =
       AndroidNotificationDetails(
-        'pet_activities',
+        'pet_activities_v4',
         'Actividades de Mascotas',
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: Importance.max,
         priority: Priority.high,
+        sound: RawResourceAndroidNotificationSound('actividad'),
       );
 
   static Future<void> initialize() async {
@@ -29,6 +31,11 @@ class NotificationService {
         channelName: 'Actividades de Mascotas',
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: NotificationImportance.Max,
+        playSound: true,
+        soundSource: 'resource://raw/actividad',
+        enableVibration: true,
+        onlyAlertOnce: false,
+        groupAlertBehavior: GroupAlertBehavior.All,
       ),
     ]);
   }
@@ -37,13 +44,9 @@ class NotificationService {
     try {
       final deviceTimeZone = await FlutterTimezone.getLocalTimezone();
       tz.setLocalLocation(tz.getLocation(deviceTimeZone));
-      print('[NOTIF] Zona horaria configurada: $deviceTimeZone');
-    } catch (e) {
+    } catch (_) {
       // Fallback seguro para evitar que falle la programación.
       tz.setLocalLocation(tz.getLocation('UTC'));
-      print(
-        '[NOTIF] No se pudo obtener zona horaria local. Usando UTC. Error: $e',
-      );
     }
   }
 
@@ -69,54 +72,29 @@ class NotificationService {
     return canSchedule ?? false;
   }
 
-  static Future<bool> requestExactAlarmPermissionForTest() async {
-    final androidPlugin = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    final before = await androidPlugin?.canScheduleExactNotifications();
-    if (before == true) {
-      return true;
-    }
-
-    await androidPlugin?.requestExactAlarmsPermission();
-    final after = await androidPlugin?.canScheduleExactNotifications();
-    print('[NOTIF] Permiso exacto habilitado: ${after == true}');
-    return after == true;
-  }
-
   static Future<AndroidScheduleMode> scheduleNotification({
     required int id,
     required String title,
     required String body,
     required DateTime scheduledTime,
   }) async {
-    final now = DateTime.now();
     final tzScheduled = tz.TZDateTime.from(scheduledTime, tz.local);
-    print('[NOTIF] Ahora: $now');
-    print('[NOTIF] Programada para: $tzScheduled');
-    print('[NOTIF] ID: $id, Título: $title, Body: $body');
-
-    if (!tzScheduled.isAfter(tz.TZDateTime.now(tz.local))) {
-      print(
-        '[NOTIF] Ajustando hora: estaba en pasado o muy cerca del presente.',
-      );
-    }
 
     final safeSchedule = tzScheduled.isAfter(tz.TZDateTime.now(tz.local))
         ? tzScheduled
         : tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10));
 
     final hasExactPermission = await canScheduleExactAlarms();
-    print('[NOTIF] canScheduleExactAlarms: $hasExactPermission');
 
     try {
       final awesomeScheduled = await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: id,
           channelKey: _awesomeChannelKey,
+          groupKey: 'activity_$id',
           title: title,
           body: body,
+          customSound: 'resource://raw/actividad',
           wakeUpScreen: true,
           category: NotificationCategory.Reminder,
         ),
@@ -137,16 +115,10 @@ class NotificationService {
         final usedMode = hasExactPermission
             ? AndroidScheduleMode.alarmClock
             : AndroidScheduleMode.inexactAllowWhileIdle;
-        print(
-          '[NOTIF] Programada con AwesomeNotifications. '
-          'Resultado bool: $awesomeScheduled, encontrada en agenda: $scheduledByAwesome',
-        );
         return usedMode;
       }
-
-      print('[NOTIF] AwesomeNotifications devolvió false, aplicando fallback.');
-    } catch (e) {
-      print('[NOTIF] Error al programar con AwesomeNotifications: $e');
+    } catch (_) {
+      // Si Awesome falla, continuamos con el fallback del plugin local.
     }
 
     Future<AndroidScheduleMode> scheduleWithMode(
@@ -160,7 +132,6 @@ class NotificationService {
         notificationDetails: NotificationDetails(android: _androidDetails),
         androidScheduleMode: mode,
       );
-      print('[NOTIF] Programada con modo: $mode');
       return mode;
     }
 
@@ -170,8 +141,7 @@ class NotificationService {
       try {
         // En Android recientes, alarmClock suele disparar con mayor consistencia.
         usedMode = await scheduleWithMode(AndroidScheduleMode.alarmClock);
-      } catch (e) {
-        print('[NOTIF] alarmClock falló: $e');
+      } catch (_) {
         usedMode = await scheduleWithMode(
           AndroidScheduleMode.exactAllowWhileIdle,
         );
@@ -182,22 +152,11 @@ class NotificationService {
       );
     }
 
-    final pending = await _notificationsPlugin.pendingNotificationRequests();
-    print('[NOTIF] Pendientes tras programar: ${pending.length}');
     return usedMode;
   }
 
   static Future<void> cancelNotification(int id) async {
     await AwesomeNotifications().cancel(id);
     await _notificationsPlugin.cancel(id: id);
-  }
-
-  static Future<void> showTestNotification() async {
-    await _notificationsPlugin.show(
-      id: 9999,
-      title: 'Prueba inmediata',
-      body: '¿Ves esta notificación?',
-      notificationDetails: NotificationDetails(android: _androidDetails),
-    );
   }
 }
