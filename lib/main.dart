@@ -17,6 +17,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   await NotificationService.initialize();
+  await NotificationService.configureLocalTimeZone();
+  await NotificationService.requestPlatformPermissions();
 
   // Solicitar permiso de notificaciones en Android 13+
   if (await Permission.notification.isDenied) {

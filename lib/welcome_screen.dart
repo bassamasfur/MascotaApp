@@ -149,10 +149,24 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
+                    final hasExactPermission =
+                        await NotificationService.requestExactAlarmPermissionForTest();
+                    if (!hasExactPermission && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Activa "Alarmas y recordatorios" para mejorar la puntualidad de notificaciones.',
+                          ),
+                        ),
+                      );
+                    }
+
                     final now = DateTime.now();
                     final scheduled = now.add(const Duration(minutes: 1));
-                    await NotificationService.scheduleNotification(
-                      id: 8888,
+                    final notificationId =
+                        now.millisecondsSinceEpoch % 2147483647;
+                    final usedMode = await NotificationService.scheduleNotification(
+                      id: notificationId,
                       title: 'Notificación de prueba programada',
                       body:
                           '¡Esto es una notificación programada para 1 minuto en el futuro!',
@@ -160,9 +174,9 @@ class WelcomeScreen extends StatelessWidget {
                     );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            'Notificación programada para 1 minuto en el futuro.',
+                            'Programada para 1 minuto. Modo: $usedMode',
                           ),
                         ),
                       );
