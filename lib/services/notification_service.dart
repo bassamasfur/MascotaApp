@@ -6,6 +6,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   static const String _awesomeChannelKey = 'pet_activities_channel_v4';
+  static Future<void>? _initFuture;
 
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -17,10 +18,18 @@ class NotificationService {
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: Importance.max,
         priority: Priority.high,
-        sound: RawResourceAndroidNotificationSound('actividad'),
       );
 
   static Future<void> initialize() async {
+    if (_initFuture != null) {
+      return _initFuture!;
+    }
+
+    _initFuture = _initializeInternal();
+    return _initFuture!;
+  }
+
+  static Future<void> _initializeInternal() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const settings = InitializationSettings(android: android);
     await _notificationsPlugin.initialize(settings: settings);
@@ -32,7 +41,6 @@ class NotificationService {
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: NotificationImportance.Max,
         playSound: true,
-        soundSource: 'resource://raw/actividad',
         enableVibration: true,
         onlyAlertOnce: false,
         groupAlertBehavior: GroupAlertBehavior.All,
@@ -78,6 +86,10 @@ class NotificationService {
     required String body,
     required DateTime scheduledTime,
   }) async {
+    await initialize();
+    await configureLocalTimeZone();
+    await requestPlatformPermissions();
+
     final tzScheduled = tz.TZDateTime.from(scheduledTime, tz.local);
 
     final safeSchedule = tzScheduled.isAfter(tz.TZDateTime.now(tz.local))
@@ -94,7 +106,6 @@ class NotificationService {
           groupKey: 'activity_$id',
           title: title,
           body: body,
-          customSound: 'resource://raw/actividad',
           wakeUpScreen: true,
           category: NotificationCategory.Reminder,
         ),

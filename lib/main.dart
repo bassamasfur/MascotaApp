@@ -5,7 +5,6 @@ import 'app.dart';
 import 'services/notification_service.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:permission_handler/permission_handler.dart';
 
 /// Punto de entrada de la aplicación
 ///
@@ -16,14 +15,6 @@ import 'package:permission_handler/permission_handler.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
-  await NotificationService.initialize();
-  await NotificationService.configureLocalTimeZone();
-  await NotificationService.requestPlatformPermissions();
-
-  // Solicitar permiso de notificaciones en Android 13+
-  if (await Permission.notification.isDenied) {
-    await Permission.notification.request();
-  }
 
   runApp(
     ChangeNotifierProvider(
@@ -31,4 +22,12 @@ Future<void> main() async {
       child: const PetApp(),
     ),
   );
+
+  // No bloquear el primer frame: pedir permisos despues de renderizar la UI.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    NotificationService.initialize().then((_) async {
+      await NotificationService.configureLocalTimeZone();
+      await NotificationService.requestPlatformPermissions();
+    });
+  });
 }
