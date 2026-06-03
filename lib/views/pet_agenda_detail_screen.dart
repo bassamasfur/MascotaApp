@@ -249,17 +249,31 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                             final petName = widget.pet.name;
                             final actLabel = _activityTypeLabel(selectedType!);
                             final notifTime = today;
-                            await NotificationService.scheduleNotification(
-                              id: notifId,
-                              title: 'Actividad pendiente para $petName',
-                              body: 'Tienes que realizar: $actLabel',
-                              scheduledTime: notifTime,
-                            );
                             // Usar el provider para actualizar y persistir
                             await Provider.of<PetListProvider>(
                               context,
                               listen: false,
                             ).updatePetActivities(widget.pet.id, _activities);
+
+                            try {
+                              await NotificationService.scheduleNotification(
+                                id: notifId,
+                                title: 'Actividad pendiente para $petName',
+                                body: 'Tienes que realizar: $actLabel',
+                                scheduledTime: notifTime,
+                              );
+                            } catch (_) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'La actividad se guardo, pero la notificacion no pudo programarse.',
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+
                             _reloadActivities();
                             if (mounted) {
                               Navigator.of(

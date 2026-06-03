@@ -5,7 +5,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  static const String _awesomeChannelKey = 'pet_activities_channel_v4';
+  static const String _awesomeChannelKey = 'pet_activities_channel_v5';
   static Future<void>? _initFuture;
 
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -13,11 +13,12 @@ class NotificationService {
 
   static const AndroidNotificationDetails _androidDetails =
       AndroidNotificationDetails(
-        'pet_activities_v4',
+        'pet_activities_v5',
         'Actividades de Mascotas',
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: Importance.max,
         priority: Priority.high,
+        sound: RawResourceAndroidNotificationSound('actividad'),
       );
 
   static Future<void> initialize() async {
@@ -41,6 +42,7 @@ class NotificationService {
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: NotificationImportance.Max,
         playSound: true,
+        soundSource: 'resource://raw/actividad',
         enableVibration: true,
         onlyAlertOnce: false,
         groupAlertBehavior: GroupAlertBehavior.All,
@@ -106,6 +108,7 @@ class NotificationService {
           groupKey: 'activity_$id',
           title: title,
           body: body,
+          customSound: 'resource://raw/actividad',
           wakeUpScreen: true,
           category: NotificationCategory.Reminder,
         ),
