@@ -16,6 +16,11 @@ class PetAgendaDetailScreen extends StatefulWidget {
 }
 
 class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
+  int _notificationIdForActivity(PetActivity activity) {
+    return int.tryParse(activity.id.hashCode.toString().replaceAll('-', '')) ??
+        activity.id.hashCode.abs();
+  }
+
   void _reloadActivities() {
     final provider = Provider.of<PetListProvider>(context, listen: false);
     final pet = provider.pets.firstWhere(
@@ -47,6 +52,7 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
       ),
     );
     if (confirm == true) {
+      final removedActivity = _activities[index];
       setState(() {
         _activities.removeAt(index);
       });
@@ -55,16 +61,9 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
         context,
         listen: false,
       ).updatePetActivities(widget.pet.id, _activities);
-      // LOG de depuración para ver actividades guardadas
-      final provider = Provider.of<PetListProvider>(context, listen: false);
-      final pet = provider.pets.firstWhere(
-        (p) => p.id == widget.pet.id,
-        orElse: () => widget.pet,
+      await NotificationService.cancelNotification(
+        _notificationIdForActivity(removedActivity),
       );
-      print('ACTIVIDADES GUARDADAS PARA ${pet.name}:');
-      for (final act in pet.activities) {
-        print(' - ${act.type} @ ${act.schedules.map((s) => s.time)}');
-      }
       _reloadActivities();
       if (mounted) {
         ScaffoldMessenger.of(
@@ -157,8 +156,8 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  // Hora
-                  const Text('Hora'),
+                  // Hora diaria
+                  const Text('Hora diaria del recordatorio'),
                   GestureDetector(
                     onTap: () async {
                       final picked = await showTimePicker(
@@ -174,7 +173,7 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: selectedTime == null
-                              ? 'Selecciona la hora'
+                              ? 'Selecciona la hora diaria'
                               : selectedTime!.format(context),
                           border: const OutlineInputBorder(),
                           suffixIcon: const Icon(Icons.access_time),
@@ -238,14 +237,9 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                                 _activities[index] = editedActivity;
                               }
                             });
-                            // Programar notificación local para la actividad
-                            final notifId =
-                                int.tryParse(
-                                  editedActivity.id.hashCode
-                                      .toString()
-                                      .replaceAll('-', ''),
-                                ) ??
-                                DateTime.now().millisecondsSinceEpoch;
+                            final notifId = _notificationIdForActivity(
+                              editedActivity,
+                            );
                             final petName = widget.pet.name;
                             final actLabel = _activityTypeLabel(selectedType!);
                             final notifTime = today;
@@ -256,6 +250,9 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                             ).updatePetActivities(widget.pet.id, _activities);
 
                             try {
+                              await NotificationService.cancelNotification(
+                                notifId,
+                              );
                               await NotificationService.scheduleNotification(
                                 id: notifId,
                                 title: 'Actividad pendiente para $petName',
@@ -267,7 +264,7 @@ class _PetAgendaDetailScreenState extends State<PetAgendaDetailScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                      'La actividad se guardo, pero la notificacion no pudo programarse.',
+                                      'La actividad se guardo, pero el recordatorio diario no pudo programarse.',
                                     ),
                                   ),
                                 );

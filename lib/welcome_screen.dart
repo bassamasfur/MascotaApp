@@ -153,79 +153,86 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               // Accesos rápidos
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Builder(
-                    builder: (context) {
-                      return HomeCard(
-                        title: 'Mis Mascotas',
-                        subtitle: 'Gestiona el perfil de tus mascotas',
-                        color: Color(0xFF4FC3F7),
-                        image: 'assets/icons/cat.png',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => PetListView(
-                                pets: petListProvider.pets,
-                                onDeletePet: (pet) async {
-                                  await petListProvider.deletePet(pet);
-                                  Navigator.of(context).pop();
-                                },
-                                onAddPet: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => RegisterPetView(
-                                        onPetRegistered: (pet) async {
-                                          Navigator.of(
-                                            context,
-                                          ).popUntil((route) => route.isFirst);
-                                          await petListProvider.addPet(pet);
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                                onEditPet: (pet) {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => RegisterEditPetView(
-                                        pet: pet,
-                                        isEdit: true,
-                                        onPetSaved: (editedPet) async {
-                                          Navigator.of(
-                                            context,
-                                          ).popUntil((route) => route.isFirst);
-                                          await petListProvider.editPet(
-                                            editedPet,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Builder(
+                        builder: (context) {
+                          return HomeCard(
+                            title: 'Mis Mascotas',
+                            subtitle: 'Gestiona el perfil de tus mascotas',
+                            color: Color(0xFF4FC3F7),
+                            image: 'assets/icons/mascotas.png',
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => PetListView(
+                                    pets: petListProvider.pets,
+                                    onDeletePet: (pet) async {
+                                      await petListProvider.deletePet(pet);
+                                      Navigator.of(context).pop();
+                                    },
+                                    onAddPet: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => RegisterPetView(
+                                            onPetRegistered: (pet) async {
+                                              Navigator.of(context).popUntil(
+                                                (route) => route.isFirst,
+                                              );
+                                              await petListProvider.addPet(pet);
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    onEditPet: (pet) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => RegisterEditPetView(
+                                            pet: pet,
+                                            isEdit: true,
+                                            onPetSaved: (editedPet) async {
+                                              Navigator.of(context).popUntil(
+                                                (route) => route.isFirst,
+                                              );
+                                              await petListProvider.editPet(
+                                                editedPet,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            cardWidth: double.infinity,
+                            cardHeight: 188,
+                            imageSize: 116,
                           );
                         },
-                        cardWidth: 140,
-                        cardHeight: 140,
-                        imageSize: 64,
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 20),
-                  HomeCard(
-                    title: 'Razas',
-                    subtitle: 'Explora razas de perros y gatos',
-                    color: Color(0xFF81C784),
-                    image: 'assets/icons/dog.png',
-                    onTap: () => Navigator.pushNamed(context, '/breeds'),
-                    cardWidth: 140,
-                    cardHeight: 140,
-                    imageSize: 64,
-                  ),
-                ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: HomeCard(
+                        title: 'Razas',
+                        subtitle: 'Explora razas de perros y gatos',
+                        color: Color(0xFF81C784),
+                        image: 'assets/icons/razas.png',
+                        onTap: () => Navigator.pushNamed(context, '/breeds'),
+                        cardWidth: double.infinity,
+                        cardHeight: 188,
+                        imageSize: 116,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 28),
               // Botones de especie

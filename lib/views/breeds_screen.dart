@@ -90,43 +90,52 @@ class _BreedsScreenState extends State<BreedsScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  // Imagen principal mejorada
-                                  SizedBox(
-                                    height: 140,
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
+                                  // Imagen principal con aire alrededor para que no quede pegada al borde.
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      14,
+                                      14,
+                                      14,
+                                      0,
+                                    ),
+                                    child: Container(
+                                      height: 140,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[100],
+                                        borderRadius: BorderRadius.circular(18),
                                       ),
-                                      child: CachedNetworkImage(
-                                        imageUrl: breed.imagenUrl,
-                                        fit: BoxFit.contain,
-                                        placeholder: (context, url) =>
-                                            Container(
-                                              height: 120,
-                                              color: Colors.grey[200],
-                                              child: const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(18),
+                                        child: CachedNetworkImage(
+                                          imageUrl: breed.imagenUrl,
+                                          fit: BoxFit.contain,
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                height: 120,
+                                                color: Colors.grey[200],
+                                                child: const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
                                               ),
-                                            ),
-                                        errorWidget: (context, url, error) =>
-                                            Container(
-                                              height: 120,
-                                              color: Colors.grey[200],
-                                              child: const Icon(
-                                                Icons.pets,
-                                                size: 48,
-                                                color: Colors.grey,
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                                height: 120,
+                                                color: Colors.grey[200],
+                                                child: const Icon(
+                                                  Icons.pets,
+                                                  size: 48,
+                                                  color: Colors.grey,
+                                                ),
                                               ),
-                                            ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 14,
-                                      vertical: 10,
+                                      vertical: 12,
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
