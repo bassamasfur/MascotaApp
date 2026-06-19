@@ -20,6 +20,7 @@ class _RegisterPetViewState extends State<RegisterPetView> {
   final _descriptionController = TextEditingController();
   final _microchipController = TextEditingController();
   final _registrationController = TextEditingController();
+  final _birthDateController = TextEditingController();
 
   String _species = 'Gato';
   String _gender = 'Hembra';
@@ -28,36 +29,46 @@ class _RegisterPetViewState extends State<RegisterPetView> {
   DateTime? _birthDate;
   File? _imageFile;
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _breedController.dispose();
+    _weightController.dispose();
+    _colorController.dispose();
+    _descriptionController.dispose();
+    _microchipController.dispose();
+    _registrationController.dispose();
+    _birthDateController.dispose();
+    super.dispose();
+  }
+
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    while (true) {
-      final picked = await picker.pickImage(source: ImageSource.camera);
-      if (picked == null) return; // Cancelado
-      if (!mounted) return;
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('¿Usar esta foto?'),
-          content: Image.file(File(picked.path), height: 220),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Repetir'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Aceptar'),
-            ),
-          ],
-        ),
-      );
-      if (confirmed == true) {
-        setState(() {
-          _imageFile = File(picked.path);
-        });
-        break;
-      }
-      // Si no confirmó, repite el ciclo (vuelve a abrir la cámara)
+    final picked = await picker.pickImage(source: ImageSource.camera);
+    if (picked == null || !mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('¿Usar esta foto?'),
+        content: Image.file(File(picked.path), height: 220),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Repetir'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
     }
   }
 
@@ -385,14 +396,7 @@ class _RegisterPetViewState extends State<RegisterPetView> {
                                     fillColor: Colors.white,
                                   ),
                                   readOnly: true,
-                                  controller: TextEditingController(
-                                    text: _birthDate != null
-                                        ? _birthDate!
-                                              .toLocal()
-                                              .toString()
-                                              .split(' ')[0]
-                                        : '',
-                                  ),
+                                  controller: _birthDateController,
                                   onTap: () async {
                                     final picked = await showDatePicker(
                                       context: context,
@@ -403,7 +407,13 @@ class _RegisterPetViewState extends State<RegisterPetView> {
                                       lastDate: DateTime.now(),
                                     );
                                     if (picked != null) {
-                                      setState(() => _birthDate = picked);
+                                      setState(() {
+                                        _birthDate = picked;
+                                        _birthDateController.text = picked
+                                            .toLocal()
+                                            .toString()
+                                            .split(' ')[0];
+                                      });
                                     }
                                   },
                                 ),

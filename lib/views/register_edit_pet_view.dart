@@ -5,11 +5,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import '../models/pet.dart';
 
-/// Vista unificada para registrar o editar una mascota
+/// Vista unificada para registrar o editar una mascota.
 class RegisterEditPetView extends StatefulWidget {
   final void Function(Pet) onPetSaved;
   final Pet? pet;
   final bool isEdit;
+
   const RegisterEditPetView({
     super.key,
     required this.onPetSaved,
@@ -23,13 +24,14 @@ class RegisterEditPetView extends StatefulWidget {
 
 class _RegisterEditPetViewState extends State<RegisterEditPetView> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _breedController;
-  late TextEditingController _weightController;
-  late TextEditingController _colorController;
-  late TextEditingController _descriptionController;
-  late TextEditingController _microchipController;
-  late TextEditingController _registrationController;
+  late final TextEditingController _nameController;
+  late final TextEditingController _breedController;
+  late final TextEditingController _weightController;
+  late final TextEditingController _colorController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _microchipController;
+  late final TextEditingController _registrationController;
+  late final TextEditingController _birthDateController;
   late String _species;
   late String _gender;
   late bool _isPureBreed;
@@ -41,6 +43,7 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
   void initState() {
     super.initState();
     final pet = widget.pet;
+
     _nameController = TextEditingController(text: pet?.name ?? '');
     _breedController = TextEditingController(text: pet?.breed ?? '');
     _weightController = TextEditingController(
@@ -54,88 +57,109 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
     _registrationController = TextEditingController(
       text: pet?.registrationNumber ?? '',
     );
+    _birthDate = pet?.birthDate;
+    _birthDateController = TextEditingController(
+      text: _birthDate != null
+          ? _birthDate!.toLocal().toString().split(' ')[0]
+          : '',
+    );
+
     _species = pet?.species ?? 'Gato';
     _gender = pet?.gender ?? 'Hembra';
     _isPureBreed = pet?.isPureBreed ?? false;
     _age = pet?.age ?? 1;
-    _birthDate = pet?.birthDate;
+
     if (pet != null && pet.imageUrl.isNotEmpty) {
       _imageFile = File(pet.imageUrl);
     }
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _breedController.dispose();
+    _weightController.dispose();
+    _colorController.dispose();
+    _descriptionController.dispose();
+    _microchipController.dispose();
+    _registrationController.dispose();
+    _birthDateController.dispose();
+    super.dispose();
+  }
+
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    while (true) {
-      final picked = await picker.pickImage(source: ImageSource.camera);
-      if (picked == null) return;
-      if (!mounted) return;
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('¿Usar esta foto?'),
-          content: Image.file(File(picked.path), height: 220),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Repetir'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Aceptar'),
-            ),
-          ],
-        ),
-      );
-      if (confirmed == true) {
-        // Guardar la imagen en el directorio de documentos de la app
-        final appDir = await getApplicationDocumentsDirectory();
-        final fileName =
-            'pet_${DateTime.now().millisecondsSinceEpoch}${path.extension(picked.path)}';
-        final savedImage = await File(
-          picked.path,
-        ).copy(path.join(appDir.path, fileName));
-        setState(() {
-          _imageFile = savedImage;
-        });
-        break;
-      }
-    }
+    final picked = await picker.pickImage(source: ImageSource.camera);
+    if (picked == null || !mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('¿Usar esta foto?'),
+        content: Image.file(File(picked.path), height: 220),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Repetir'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName =
+        'pet_${DateTime.now().millisecondsSinceEpoch}${path.extension(picked.path)}';
+    final savedImage = await File(
+      picked.path,
+    ).copy(path.join(appDir.path, fileName));
+
+    if (!mounted) return;
+    setState(() {
+      _imageFile = savedImage;
+    });
   }
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
-      final original = widget.pet;
-      final pet = Pet(
-        id: original?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-        name: _nameController.text.trim(),
-        species: _species,
-        breed: _breedController.text.trim(),
-        isPureBreed: _isPureBreed,
-        age: _age,
-        weight: double.tryParse(_weightController.text) ?? 0.0,
-        birthDate: _birthDate,
-        gender: _gender,
-        color: _colorController.text.trim(),
-        microchip: _microchipController.text.trim().isEmpty
-            ? null
-            : _microchipController.text.trim(),
-        registrationNumber: _registrationController.text.trim().isEmpty
-            ? null
-            : _registrationController.text.trim(),
-        imageUrl: _imageFile?.path ?? '',
-        description: _descriptionController.text.trim(),
-        reminders: original?.reminders ?? const [],
-        medicalData: original?.medicalData ?? const [],
-        activities: original?.activities ?? const [],
-      );
-      widget.onPetSaved(pet);
-    }
+    if (!_formKey.currentState!.validate()) return;
+
+    final original = widget.pet;
+    final pet = Pet(
+      id: original?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      name: _nameController.text.trim(),
+      species: _species,
+      breed: _breedController.text.trim(),
+      isPureBreed: _isPureBreed,
+      age: _age,
+      weight: double.tryParse(_weightController.text) ?? 0.0,
+      birthDate: _birthDate,
+      gender: _gender,
+      color: _colorController.text.trim(),
+      microchip: _microchipController.text.trim().isEmpty
+          ? null
+          : _microchipController.text.trim(),
+      registrationNumber: _registrationController.text.trim().isEmpty
+          ? null
+          : _registrationController.text.trim(),
+      imageUrl: _imageFile?.path ?? '',
+      description: _descriptionController.text.trim(),
+      reminders: original?.reminders ?? const [],
+      medicalData: original?.medicalData ?? const [],
+      activities: original?.activities ?? const [],
+    );
+
+    widget.onPetSaved(pet);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFE3F2FD),
       appBar: AppBar(
@@ -239,7 +263,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             ),
                           ),
                           const SizedBox(height: 18),
-                          // Nombre
                           TextFormField(
                             controller: _nameController,
                             decoration: InputDecoration(
@@ -259,7 +282,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                                 : null,
                           ),
                           const SizedBox(height: 12),
-                          // Especie y Raza
                           Row(
                             children: [
                               Expanded(
@@ -275,8 +297,9 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                                       child: Text('Perro'),
                                     ),
                                   ],
-                                  onChanged: (v) =>
-                                      setState(() => _species = v ?? 'Gato'),
+                                  onChanged: (v) => setState(() {
+                                    _species = v ?? 'Gato';
+                                  }),
                                   decoration: InputDecoration(
                                     labelText: 'Especie',
                                     prefixIcon: const Icon(
@@ -312,7 +335,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          // Raza pura
                           SwitchListTile(
                             value: _isPureBreed,
                             onChanged: (v) => setState(() => _isPureBreed = v),
@@ -321,7 +343,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             contentPadding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: 12),
-                          // Peso y Género
                           Row(
                             children: [
                               Expanded(
@@ -356,8 +377,9 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                                       child: Text('Macho'),
                                     ),
                                   ],
-                                  onChanged: (v) =>
-                                      setState(() => _gender = v ?? 'Hembra'),
+                                  onChanged: (v) => setState(() {
+                                    _gender = v ?? 'Hembra';
+                                  }),
                                   decoration: InputDecoration(
                                     labelText: 'Género',
                                     prefixIcon: const Icon(
@@ -375,7 +397,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          // Color
                           TextFormField(
                             controller: _colorController,
                             decoration: InputDecoration(
@@ -392,7 +413,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          // Edad y Fecha de nacimiento
                           Row(
                             children: [
                               Expanded(
@@ -411,9 +431,9 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                                   ),
                                   initialValue: _age.toString(),
                                   keyboardType: TextInputType.number,
-                                  onChanged: (v) => setState(
-                                    () => _age = int.tryParse(v) ?? 1,
-                                  ),
+                                  onChanged: (v) => setState(() {
+                                    _age = int.tryParse(v) ?? 1;
+                                  }),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -432,14 +452,7 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                                     fillColor: Colors.white,
                                   ),
                                   readOnly: true,
-                                  controller: TextEditingController(
-                                    text: _birthDate != null
-                                        ? _birthDate!
-                                              .toLocal()
-                                              .toString()
-                                              .split(' ')[0]
-                                        : '',
-                                  ),
+                                  controller: _birthDateController,
                                   onTap: () async {
                                     final picked = await showDatePicker(
                                       context: context,
@@ -450,7 +463,13 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                                       lastDate: DateTime.now(),
                                     );
                                     if (picked != null) {
-                                      setState(() => _birthDate = picked);
+                                      setState(() {
+                                        _birthDate = picked;
+                                        _birthDateController.text = picked
+                                            .toLocal()
+                                            .toString()
+                                            .split(' ')[0];
+                                      });
                                     }
                                   },
                                 ),
@@ -458,48 +477,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          // Microchip y registro (ocultos por ahora)
-                          // Row(
-                          //   children: [
-                          //     Expanded(
-                          //       child: TextFormField(
-                          //         controller: _microchipController,
-                          //         decoration: InputDecoration(
-                          //           labelText: 'Microchip (opcional)',
-                          //           prefixIcon: const Icon(
-                          //             Icons.qr_code,
-                          //             color: Color(0xFF2196F3),
-                          //           ),
-                          //           border: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.circular(12),
-                          //           ),
-                          //           filled: true,
-                          //           fillColor: Colors.white,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //     const SizedBox(width: 10),
-                          //     Expanded(
-                          //       child: TextFormField(
-                          //         controller: _registrationController,
-                          //         decoration: InputDecoration(
-                          //           labelText: 'N° de registro (opcional)',
-                          //           prefixIcon: const Icon(
-                          //             Icons.confirmation_number,
-                          //             color: Color(0xFF2196F3),
-                          //           ),
-                          //           border: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.circular(12),
-                          //           ),
-                          //           filled: true,
-                          //           fillColor: Colors.white,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          const SizedBox(height: 12),
-                          // Descripción
                           TextFormField(
                             controller: _descriptionController,
                             decoration: InputDecoration(
@@ -517,7 +494,6 @@ class _RegisterEditPetViewState extends State<RegisterEditPetView> {
                             maxLines: 2,
                           ),
                           const SizedBox(height: 24),
-                          // Botón grande
                           SizedBox(
                             width: double.infinity,
                             height: 54,
