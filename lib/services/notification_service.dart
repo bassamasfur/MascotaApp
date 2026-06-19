@@ -3,9 +3,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     hide GroupAlertBehavior;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
+import '../models/app_notification.dart';
+import '../providers/notification_center_provider.dart';
+import 'dart:convert';
 
 class NotificationService {
-  static const String _awesomeChannelKey = 'pet_activities_channel_v5';
+  static const String _awesomeChannelKey = 'pet_activities_channel_v6';
   static Future<void>? _initFuture;
 
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -13,12 +16,12 @@ class NotificationService {
 
   static const AndroidNotificationDetails _androidDetails =
       AndroidNotificationDetails(
-        'pet_activities_v5',
+        'pet_activities_v6',
         'Actividades de Mascotas',
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: Importance.max,
         priority: Priority.high,
-        sound: RawResourceAndroidNotificationSound('actividad'),
+        playSound: true,
       );
 
   static Future<void> initialize() async {
@@ -33,7 +36,10 @@ class NotificationService {
   static Future<void> _initializeInternal() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const settings = InitializationSettings(android: android);
-    await _notificationsPlugin.initialize(settings: settings);
+    await _notificationsPlugin.initialize(
+      settings: settings,
+      onDidReceiveNotificationResponse: _onLocalNotificationResponse,
+    );
 
     await AwesomeNotifications().initialize(null, [
       NotificationChannel(
@@ -42,12 +48,27 @@ class NotificationService {
         channelDescription: 'Notificaciones de actividades de mascotas',
         importance: NotificationImportance.Max,
         playSound: true,
-        soundSource: 'resource://raw/actividad',
         enableVibration: true,
         onlyAlertOnce: false,
         groupAlertBehavior: GroupAlertBehavior.All,
       ),
     ]);
+
+    await AwesomeNotifications().setListeners(
+      onActionReceivedMethod: _onAwesomeActionReceived,
+    );
+
+    final launchDetails = await _notificationsPlugin
+        .getNotificationAppLaunchDetails();
+    final response = launchDetails?.notificationResponse;
+    if (launchDetails?.didNotificationLaunchApp == true && response != null) {
+      final payload = _decodePayload(response.payload);
+      await _storeNotificationFromTap(
+        id: response.id ?? DateTime.now().millisecondsSinceEpoch,
+        title: payload['title'] ?? 'Notificación',
+        body: payload['body'] ?? '',
+      );
+    }
   }
 
   static Future<void> configureLocalTimeZone() async {
@@ -108,7 +129,7 @@ class NotificationService {
           groupKey: 'activity_$id',
           title: title,
           body: body,
-          customSound: 'resource://raw/actividad',
+          payload: {'id': '$id', 'title': title, 'body': body},
           wakeUpScreen: true,
           category: NotificationCategory.Reminder,
         ),
@@ -145,6 +166,7 @@ class NotificationService {
         scheduledDate: safeSchedule,
         notificationDetails: NotificationDetails(android: _androidDetails),
         androidScheduleMode: mode,
+        payload: jsonEncode({'id': id, 'title': title, 'body': body}),
       );
       return mode;
     }
@@ -172,5 +194,59 @@ class NotificationService {
   static Future<void> cancelNotification(int id) async {
     await AwesomeNotifications().cancel(id);
     await _notificationsPlugin.cancel(id: id);
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> _onLocalNotificationResponse(
+    NotificationResponse response,
+  ) async {
+    final payload = _decodePayload(response.payload);
+    await _storeNotificationFromTap(
+      id: response.id ?? DateTime.now().millisecondsSinceEpoch,
+      title: payload['title'] ?? 'Notificación',
+      body: payload['body'] ?? '',
+    );
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> _onAwesomeActionReceived(ReceivedAction action) async {
+    final payload = _decodePayload(jsonEncode(action.payload ?? const {}));
+    await _storeNotificationFromTap(
+      id: action.id ?? DateTime.now().millisecondsSinceEpoch,
+      title: payload['title'] ?? action.title ?? 'Notificación',
+      body: payload['body'] ?? action.body ?? '',
+    );
+  }
+
+  static Future<void> _storeNotificationFromTap({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await NotificationCenterProvider.instance.addNotification(
+      AppNotification(
+        id: id,
+        title: title,
+        body: body,
+        receivedAt: DateTime.now(),
+      ),
+    );
+  }
+
+  static Map<String, dynamic> _decodePayload(String? payload) {
+    if (payload == null || payload.isEmpty) {
+      return const {};
+    }
+
+    try {
+      final decoded = jsonDecode(payload);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      }
+    } catch (_) {
+      // Si el payload no es JSON, ignoramos el contenido extra.
+    }
+
+    return const {};
   }
 }
